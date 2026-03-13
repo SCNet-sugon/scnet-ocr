@@ -15,14 +15,11 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin http://10.19.0.66:10068/sugon/sugon-scnet-ocr.git
+git remote add origin https://github.com/SCNet-sugon/scnet-ocr.git
 git branch -M main
 git push -uf origin main
 ```
 
-## Integrate with your tools
-
-* [Set up project integrations](http://10.19.0.66:10068/sugon/sugon-scnet-ocr/-/settings/integrations)
 
 ## Collaborate with your team
 
