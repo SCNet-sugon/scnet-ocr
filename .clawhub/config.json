@@ -1,0 +1,11 @@
+{
+  "name": "scnet-ocr",
+  "version": "1.0.0",
+  "description": "通用 OCR 识别，支持身份证、银行卡、营业执照、发票及通用文字",
+  "author": "SCNet",
+  "entry": "scripts/main.py",
+  "api_type": "external",
+  "permissions": ["network", "filesystem"],
+  "environment_variables": ["SCNET_API_KEY"],
+  "tags": ["ocr", "invoice", "id-card", "receipt"]
+}
