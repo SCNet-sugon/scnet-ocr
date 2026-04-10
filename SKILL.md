@@ -10,8 +10,8 @@ tags:
   - 发票识别
   - 文字提取
 input:
-  - ocrType (必需): 识别类型，可选值见下文
-  - filePath (必需): 待识别图片的本地路径
+  - ocrType : 识别类型，可选值见下文
+  - filePath : 待识别图片的本地路径
 output: 结构化的 JSON 数据，包含识别结果和置信度
 ---
 # Sugon-Scnet 通用 OCR 技能
