@@ -1,4 +1,4 @@
-# sugon-scnet-ocr
+# scnet-ocr
 
 
 
