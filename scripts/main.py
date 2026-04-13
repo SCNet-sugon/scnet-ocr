@@ -103,7 +103,8 @@ def recognize_with_retry(ocr_type, file_path, config, retry_count=0):
                 'file': (os.path.basename(file_path), f, mime_type)
             }
             data = {
-                'ocrType': ocr_type
+                'ocrType': ocr_type,
+                'channelTag': "scnetSkills"
             }
             response = requests.post(url, headers=headers, data=data, files=files, timeout=60)
     except Exception as e:
