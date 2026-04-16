@@ -26,53 +26,52 @@ INITIAL_RETRY_DELAY = 1    # 初始等待时间（秒）
 # --------------------
 
 def load_config():
-    """从 .env 文件加载配置，若文件不存在则抛出友好错误"""
-    if not ENV_FILE.exists():
-        error_msg = (
-            "\n===============================================\n"
-            "Scnet OCR 配置文件不存在\n"
-            "===============================================\n"
-            "请按以下步骤配置：\n\n"
-            "1. 申请 Scnet API Token：\n"
-            "   访问 https://www.scnet.cn 注册并获取密钥\n\n"
-            "2. 配置 Token：\n"
-            "   告诉 AI：\"帮我配置 Scnet OCR，Token 是：xxx\"\n\n"
-            "   或手动配置：\n"
-            f"   cp {SKILL_ROOT}/config/.env.example {ENV_FILE}\n"
-            f"   nano {ENV_FILE}\n"
-            "   设置 SCNET_API_KEY=你的密钥\n"
-        )
-        sys.exit(error_msg)
-
+    """从环境变量或 .env 文件加载配置，环境变量优先"""
     config = {}
-    with open(ENV_FILE, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            if '=' in line:
-                key, value = line.split('=', 1)
-                key = key.strip()
-                value = value.strip().strip('"').strip("'")
-                config[key] = value
 
-    # 检查必要配置
+    # 1. 如果 config/.env 存在，先加载其中的变量
+    if ENV_FILE.exists():
+        with open(ENV_FILE, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"').strip("'")
+                    config[key] = value
+
+    # 2. 从系统环境变量读取，覆盖 .env 中的同名变量
+    env_api_key = os.environ.get('SCNET_API_KEY')
+    if env_api_key:
+        config['SCNET_API_KEY'] = env_api_key
+
+    env_api_base = os.environ.get('SCNET_API_BASE')
+    if env_api_base:
+        config['SCNET_API_BASE'] = env_api_base
+
+    # 3. 设置默认值
+    config.setdefault('SCNET_API_BASE', 'https://api.scnet.cn/api/llm/v1')
+
+    # 4. 检查必要配置
     api_key = config.get('SCNET_API_KEY', '')
     if not api_key or api_key == 'your_scnet_api_key_here':
         error_msg = (
             "\n===============================================\n"
             "Scnet API Key 未配置\n"
             "===============================================\n"
-            "请按以下步骤配置：\n\n"
-            "1. 申请 Scnet API Token：\n"
-            "   访问 https://www.scnet.cn 注册并获取密钥\n\n"
-            "2. 配置 Token：\n"
-            f"   编辑 {ENV_FILE}\n"
-            "   设置 SCNET_API_KEY=你的密钥\n"
+            "⚠️ 安全警告：切勿在聊天中粘贴 API Key！\n\n"
+            "请通过以下任一方式设置 SCNET_API_KEY：\n\n"
+            "1. 环境变量（推荐）：\n"
+            "   export SCNET_API_KEY='你的真实密钥'\n\n"
+            "2. 配置文件：\n"
+            f"   mkdir -p {SKILL_ROOT}/config\n"
+            f"   echo 'SCNET_API_KEY=你的真实密钥' > {ENV_FILE}\n"
+            f"   chmod 600 {ENV_FILE}\n"
         )
         sys.exit(error_msg)
 
-    config.setdefault('SCNET_API_BASE', 'https://api.scnet.cn/api/llm/v1')
     return config
 
 def recognize_with_retry(ocr_type, file_path, config, retry_count=0):
@@ -141,10 +140,13 @@ def recognize_with_retry(ocr_type, file_path, config, retry_count=0):
                 "Scnet API Token 无效或已过期\n"
                 "===============================================\n"
                 f"HTTP 状态码: {response.status_code}\n\n"
+                "⚠️ 安全警告：切勿在聊天中粘贴 API Key！\n\n"
                 "解决方法：\n"
                 "1. 访问 https://www.scnet.cn 重新申请 Token\n"
-                "2. 告诉 AI：\"我的 Scnet Token 过期了，新的 Token 是：xxx\"\n"
-                f"   或手动更新 {ENV_FILE}\n"
+                "2. 手动更新配置文件：\n"
+                f"   编辑 {ENV_FILE}\n"
+                "   设置 SCNET_API_KEY=你的新密钥\n"
+                "3. 或设置环境变量：export SCNET_API_KEY='你的新密钥'\n"
             )
             sys.exit(error_msg)
         else:
