@@ -63,3 +63,9 @@
 
 ### 优化
 - 新增27种能力
+
+### 安全与隐私
+- 在 skill.yaml 中增加显式的 permissions、privacy_notice、data_handling 和 trigger_policy 声明
+- 在 SKILL.md、README.md、references/api-docs.md 顶部增加隐私与安全警告
+- 在 scripts/main.py 中增加运行前隐私提示，明确告知用户文件将被上传至 SCNET 外部服务
+- 明确触发边界：仅在用户明确要求对指定图片/PDF 进行 OCR 识别时调用，敏感文档调用前需确认

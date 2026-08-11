@@ -13,6 +13,25 @@ optional_env_vars:
 primary_credential: SCNET_API_KEY
 # 增加项目主页，解决 missing homepage 警告
 homepage: https://github.com/SCNet-sugon/scnet-ocr.git  # 请替换为实际仓库地址
+permissions:
+  - read_local_files: 读取用户指定的本地图片/PDF 文件以进行 OCR 识别
+  - access_env_vars: 读取 SCNET_API_KEY、SCNET_API_BASE 等环境变量
+  - network_outbound: 将用户文件上传至 SCNET API（默认 https://api.scnet.cn）进行识别
+  - execute_python: 通过 Python 脚本执行 OCR 识别流程
+privacy_notice:
+  - 本技能会将您提供的图片/PDF 文件上传至第三方 OCR 服务（SCNET / api.scnet.cn）进行处理。
+  - 上传内容可能包含身份证、银行卡、护照、发票、医疗记录等敏感信息，请确保您有权上传并同意服务方处理。
+  - 处理结果（识别出的文字、字段）会以 JSON 形式返回并在本地输出，不会被本技能持久化存储。
+  - 请勿上传您无权处理或受法律法规保护的他人敏感信息。
+  - 具体的数据处理、保留和隐私政策以 SCNET 服务方（https://www.scnet.cn）公示为准。
+data_handling:
+  - retention: 本技能不本地保存输入文件及识别结果，仅一次性输出到标准输出。
+  - minimization: 仅上传用户显式指定的文件；建议仅上传当前识别任务所需的最小文件。
+  - sensitive_data: 识别结果可能包含 PII，请妥善保管，避免复制到不受信任的环境。
+trigger_policy:
+  - auto_trigger: AI 仅在用户明确要求对指定图片进行 OCR/文字/票据/证件/表格识别时调用本技能。
+  - confirmation: 对于身份证、银行卡、护照、医疗票据、金融单据等敏感文档，AI 调用前应向用户确认。
+  - exclusion: 不应对用户未明确要求识别的普通图片、截图或闲聊内容自动调用。
 dependencies:
   - python3
   - requests
